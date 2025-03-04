@@ -1,5 +1,7 @@
 # Modern Solitaire
 
+![image](https://github.com/user-attachments/assets/68fdcec7-a106-41b1-aad9-cfa38172ad8d)
+
 A simple, clean, and modern web-based Solitaire game built with HTML, CSS, and JavaScript.
 
 ## How to Launch the Game
