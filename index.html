@@ -8,11 +8,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="game-container">
+    <div id="main-menu" class="menu-container">
+        <div class="menu-content">
+            <h1>SOLITAIRE</h1>
+            <h2>- by oli</h2>
+            <div class="menu-buttons">
+                <button id="start-game-btn">New Game</button>
+                <button id="quit-game-btn">Quit</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-screen" class="game-container hidden">
         <header>
             <h1>Solitaire</h1>
             <div class="game-controls">
                 <button id="new-game-btn">New Game</button>
+                <button id="menu-btn">Menu</button>
                 <div class="score-container">
                     <span>Moves: </span>
                     <span id="move-count">0</span>
@@ -54,6 +66,7 @@
             <h2>Congratulations!</h2>
             <p>You've won the game in <span id="final-moves">0</span> moves and <span id="final-time">00:00</span>!</p>
             <button id="play-again-btn">Play Again</button>
+            <button id="back-to-menu-btn">Back to Menu</button>
         </div>
     </div>
 

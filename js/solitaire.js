@@ -23,14 +23,27 @@ let tableauElements;
 let moveCountElement;
 let timerElement;
 let newGameButton;
+let menuButton;
 let winMessage;
 let finalMovesElement;
 let finalTimeElement;
 let playAgainButton;
+let backToMenuButton;
+let mainMenu;
+let gameScreen;
+let startGameButton;
+let quitGameButton;
 
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize DOM elements
+    mainMenu = document.getElementById('main-menu');
+    gameScreen = document.getElementById('game-screen');
+    startGameButton = document.getElementById('start-game-btn');
+    quitGameButton = document.getElementById('quit-game-btn');
+    menuButton = document.getElementById('menu-btn');
+    backToMenuButton = document.getElementById('back-to-menu-btn');
+    
     stockElement = document.getElementById('stock');
     wasteElement = document.getElementById('waste');
     foundationElements = Array.from({ length: 4 }, (_, i) => document.getElementById(`foundation-${i}`));
@@ -49,12 +62,49 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set up event listeners
     setupEventListeners();
     
-    // Initialize the game
-    initGame();
+    // Show the main menu by default
+    showMainMenu();
 });
+
+// Show the main menu
+function showMainMenu() {
+    gameScreen.classList.add('hidden');
+    mainMenu.classList.remove('hidden');
+    winMessage.classList.add('hidden');
+    
+    // Stop the timer if it's running
+    clearInterval(timerInterval);
+}
+
+// Start a new game
+function startNewGame() {
+    mainMenu.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+    winMessage.classList.add('hidden');
+    
+    initGame();
+}
 
 // Set up event listeners
 function setupEventListeners() {
+    // Main menu buttons
+    startGameButton.addEventListener('click', startNewGame);
+    quitGameButton.addEventListener('click', () => {
+        if (confirm('Are you sure you want to quit the game?')) {
+            // Redirect to a blank page or another website
+            // This is more reliable than window.close() which often doesn't work in modern browsers
+            window.location.href = 'about:blank';
+        }
+    });
+    
+    // Game screen buttons
+    newGameButton.addEventListener('click', initGame);
+    menuButton.addEventListener('click', showMainMenu);
+    
+    // Win message buttons
+    playAgainButton.addEventListener('click', initGame);
+    backToMenuButton.addEventListener('click', showMainMenu);
+
     // Stock pile click handler
     stockElement.addEventListener('click', () => {
         if (stockPile.length > 0) {
@@ -135,12 +185,6 @@ function setupEventListeners() {
             }
         });
     });
-
-    // New game button
-    newGameButton.addEventListener('click', initGame);
-
-    // Play again button
-    playAgainButton.addEventListener('click', initGame);
 }
 
 // Initialize the game
@@ -398,15 +442,48 @@ function drawCard() {
             return card;
         });
         wastePile = [];
+        renderGame();
+        incrementMoveCount();
     } else {
         // Draw top card from stock to waste
         const card = stockPile.pop();
         card.faceUp = true;
+        
+        // Create a temporary card element for the animation
+        const tempCard = document.createElement('div');
+        tempCard.classList.add('card', 'temp-card', 'card-flipping');
+        
+        // Add card value for the second half of the animation
+        const cardValue = document.createElement('span');
+        cardValue.textContent = `${card.value}${card.suit}`;
+        cardValue.style.opacity = '0';
+        cardValue.classList.add(card.color);
+        
+        // Make the value appear halfway through the animation
+        setTimeout(() => {
+            cardValue.style.opacity = '1';
+        }, 350);
+        
+        tempCard.appendChild(cardValue);
+        
+        // Position the card at the stock pile
+        tempCard.style.position = 'absolute';
+        tempCard.style.top = '0';
+        tempCard.style.left = '0';
+        
+        // Add the temporary card to the stock pile
+        stockElement.appendChild(tempCard);
+        
+        // Add the card to waste pile data structure
         wastePile.push(card);
         incrementMoveCount();
+        
+        // After animation completes, remove the temporary card and render the game normally
+        setTimeout(() => {
+            tempCard.remove();
+            renderGame();
+        }, 600); // Match this with the animation duration
     }
-    
-    renderGame();
 }
 
 // Move a card from one pile to another
@@ -519,6 +596,7 @@ function checkWinCondition() {
         finalMovesElement.textContent = moveCount.toString();
         finalTimeElement.textContent = timerElement.textContent;
         winMessage.classList.remove('hidden');
+        winMessage.style.display = 'flex';
     }
     
     return isWon;

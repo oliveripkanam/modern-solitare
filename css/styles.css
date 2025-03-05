@@ -4,20 +4,28 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #f0f5f9;
     color: #1e2022;
-    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0;
+    margin: 0;
 }
 
 .game-container {
     width: 100%;
     max-width: 1000px;
     padding: 20px;
+    margin: 0 auto;
+    transform: translateY(-15vh); /* Use viewport height for more consistent positioning */
 }
 
 header {
@@ -76,6 +84,7 @@ button:hover {
 .stock-pile {
     display: flex;
     gap: 20px;
+    position: relative;
 }
 
 .foundation-piles {
@@ -108,6 +117,70 @@ button:hover {
     border: 2px dashed rgba(30, 32, 34, 0.6);
 }
 
+/* Card flip animation */
+@keyframes flipCard {
+    0% {
+        transform: translateX(0) rotateY(0deg);
+        background-color: #52616b;
+        background-image: linear-gradient(135deg, #52616b 25%, #3a4750 25%, #3a4750 50%, #52616b 50%, #52616b 75%, #3a4750 75%, #3a4750 100%);
+        background-size: 20px 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        border: 3px solid #1e2022;
+    }
+    45% {
+        transform: translateX(60px) rotateY(90deg);
+        background-color: #52616b;
+        background-image: linear-gradient(135deg, #52616b 25%, #3a4750 25%, #3a4750 50%, #52616b 50%, #52616b 75%, #3a4750 75%, #3a4750 100%);
+        background-size: 20px 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        border: 3px solid #1e2022;
+    }
+    55% {
+        transform: translateX(60px) rotateY(90deg);
+        background-color: white;
+        background-image: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    100% {
+        transform: translateX(120px) rotateY(0deg);
+        background-color: white;
+        background-image: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+}
+
+.card-flipping {
+    animation: flipCard 0.6s ease-in-out;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.card-flipping span {
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Temporary card for animation */
+.temp-card {
+    position: absolute;
+    width: 100px;
+    height: 140px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+/* Improve card appearance */
 .card {
     width: 100px;
     height: 140px;
@@ -124,6 +197,7 @@ button:hover {
     font-size: 1.5rem;
     font-weight: 500;
     border: 1px solid rgba(0, 0, 0, 0.1);
+    perspective: 1000px;
 }
 
 .card.selected {
@@ -198,4 +272,55 @@ button:hover {
 
 .hidden {
     display: none;
+}
+
+/* Main Menu Styles */
+.menu-container {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0 auto;
+    transform: translateY(-15vh); /* Use viewport height for more consistent positioning */
+}
+
+.menu-content {
+    background-color: #c9d6df;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 500px;
+}
+
+.menu-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 0;
+    color: #1e2022;
+}
+
+.menu-content h2 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-top: 0;
+    margin-bottom: 40px;
+    color: #52616b;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-buttons button {
+    padding: 15px 20px;
+    font-size: 1.2rem;
+}
+
+/* Ensure hidden class works properly */
+.hidden {
+    display: none !important;
 } 
