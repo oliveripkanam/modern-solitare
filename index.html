@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Solitaire</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>Solitaire</h1>
+            <div class="game-controls">
+                <button id="new-game-btn">New Game</button>
+                <div class="score-container">
+                    <span>Moves: </span>
+                    <span id="move-count">0</span>
+                </div>
+                <div class="time-container">
+                    <span>Time: </span>
+                    <span id="timer">00:00</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="game-board">
+            <div class="top-row">
+                <div class="stock-pile">
+                    <div id="stock" class="pile"></div>
+                    <div id="waste" class="pile"></div>
+                </div>
+                <div class="foundation-piles">
+                    <div id="foundation-0" class="pile foundation"></div>
+                    <div id="foundation-1" class="pile foundation"></div>
+                    <div id="foundation-2" class="pile foundation"></div>
+                    <div id="foundation-3" class="pile foundation"></div>
+                </div>
+            </div>
+            <div class="tableau-piles">
+                <div id="tableau-0" class="pile tableau"></div>
+                <div id="tableau-1" class="pile tableau"></div>
+                <div id="tableau-2" class="pile tableau"></div>
+                <div id="tableau-3" class="pile tableau"></div>
+                <div id="tableau-4" class="pile tableau"></div>
+                <div id="tableau-5" class="pile tableau"></div>
+                <div id="tableau-6" class="pile tableau"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="win-message" class="hidden" style="display: none;">
+        <div class="win-content">
+            <h2>Congratulations!</h2>
+            <p>You've won the game in <span id="final-moves">0</span> moves and <span id="final-time">00:00</span>!</p>
+            <button id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+
+    <script src="js/solitaire.js"></script>
+</body>
+</html> 
