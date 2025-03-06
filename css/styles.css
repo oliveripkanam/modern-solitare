@@ -180,6 +180,16 @@ button:hover {
     font-weight: 500;
 }
 
+/* Card transition styles */
+.card {
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    will-change: transform, opacity;
+}
+
+.updating-cards .card {
+    transition: none;
+}
+
 /* Improve card appearance */
 .card {
     width: 100px;
@@ -189,7 +199,6 @@ button:hover {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     position: absolute;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
     user-select: none;
     display: flex;
     justify-content: center;
@@ -323,4 +332,20 @@ button:hover {
 /* Ensure hidden class works properly */
 .hidden {
     display: none !important;
+}
+
+/* Card drawing animation */
+@keyframes drawCard {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.card-drawing {
+    animation: drawCard 0.3s ease-out;
 } 

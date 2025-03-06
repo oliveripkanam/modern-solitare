@@ -268,6 +268,9 @@ function startTimer() {
 
 // Render the game state
 function renderGame() {
+    // Add a transition class to the body to enable smooth transitions
+    document.body.classList.add('updating-cards');
+    
     // Render stock pile
     stockElement.innerHTML = '';
     if (stockPile.length > 0) {
@@ -311,6 +314,11 @@ function renderGame() {
             element.appendChild(cardElement);
         });
     });
+
+    // Remove the transition class after a short delay to allow animations to complete
+    setTimeout(() => {
+        document.body.classList.remove('updating-cards');
+    }, 50);
 
     // Check for win condition
     checkWinCondition();
@@ -449,40 +457,28 @@ function drawCard() {
         const card = stockPile.pop();
         card.faceUp = true;
         
-        // Create a temporary card element for the animation
-        const tempCard = document.createElement('div');
-        tempCard.classList.add('card', 'temp-card', 'card-flipping');
-        
-        // Add card value for the second half of the animation
-        const cardValue = document.createElement('span');
-        cardValue.textContent = `${card.value}${card.suit}`;
-        cardValue.style.opacity = '0';
-        cardValue.classList.add(card.color);
-        
-        // Make the value appear halfway through the animation
-        setTimeout(() => {
-            cardValue.style.opacity = '1';
-        }, 350);
-        
-        tempCard.appendChild(cardValue);
-        
-        // Position the card at the stock pile
-        tempCard.style.position = 'absolute';
-        tempCard.style.top = '0';
-        tempCard.style.left = '0';
-        
-        // Add the temporary card to the stock pile
-        stockElement.appendChild(tempCard);
-        
         // Add the card to waste pile data structure
         wastePile.push(card);
         incrementMoveCount();
         
-        // After animation completes, remove the temporary card and render the game normally
+        // Use a more targeted update approach instead of full renderGame
+        // Update stock pile
+        stockElement.innerHTML = '';
+        if (stockPile.length > 0) {
+            const stockCardElement = createCardElement({ faceUp: false });
+            stockElement.appendChild(stockCardElement);
+        }
+        
+        // Update waste pile with animation
+        wasteElement.innerHTML = '';
+        const wasteCardElement = createCardElement(card);
+        wasteCardElement.classList.add('card-drawing');
+        wasteElement.appendChild(wasteCardElement);
+        
+        // Remove animation class after animation completes
         setTimeout(() => {
-            tempCard.remove();
-            renderGame();
-        }, 600); // Match this with the animation duration
+            wasteCardElement.classList.remove('card-drawing');
+        }, 300);
     }
 }
 
@@ -560,7 +556,72 @@ function moveCardToPile(card, sourcePile, targetPile) {
         }
         
         incrementMoveCount();
-        renderGame();
+        
+        // Use a more targeted update approach
+        // Only update the source and target piles
+        document.body.classList.add('updating-cards');
+        
+        // Update source pile
+        if (sourcePile.type === 'waste') {
+            wasteElement.innerHTML = '';
+            if (wastePile.length > 0) {
+                const topCard = wastePile[wastePile.length - 1];
+                const cardElement = createCardElement(topCard);
+                wasteElement.appendChild(cardElement);
+            }
+        } else if (sourcePile.type === 'foundation') {
+            const element = foundationElements[sourcePile.index];
+            element.innerHTML = '';
+            if (foundationPiles[sourcePile.index].length > 0) {
+                const topCard = foundationPiles[sourcePile.index][foundationPiles[sourcePile.index].length - 1];
+                const cardElement = createCardElement(topCard);
+                element.appendChild(cardElement);
+            }
+        } else if (sourcePile.type === 'tableau') {
+            const element = tableauElements[sourcePile.index];
+            element.innerHTML = '';
+            const pile = tableauPiles[sourcePile.index];
+            pile.forEach((c, i) => {
+                const cardElement = createCardElement(c);
+                cardElement.style.top = `${i * 30}px`;
+                cardElement.dataset.pileType = 'tableau';
+                cardElement.dataset.pileIndex = sourcePile.index;
+                cardElement.dataset.cardIndex = i;
+                element.appendChild(cardElement);
+            });
+        }
+        
+        // Update target pile
+        if (targetPile.type === 'foundation') {
+            const element = foundationElements[targetPile.index];
+            element.innerHTML = '';
+            if (foundationPiles[targetPile.index].length > 0) {
+                const topCard = foundationPiles[targetPile.index][foundationPiles[targetPile.index].length - 1];
+                const cardElement = createCardElement(topCard);
+                element.appendChild(cardElement);
+            }
+        } else if (targetPile.type === 'tableau') {
+            const element = tableauElements[targetPile.index];
+            element.innerHTML = '';
+            const pile = tableauPiles[targetPile.index];
+            pile.forEach((c, i) => {
+                const cardElement = createCardElement(c);
+                cardElement.style.top = `${i * 30}px`;
+                cardElement.dataset.pileType = 'tableau';
+                cardElement.dataset.pileIndex = targetPile.index;
+                cardElement.dataset.cardIndex = i;
+                element.appendChild(cardElement);
+            });
+        }
+        
+        // Remove the transition class after a short delay
+        setTimeout(() => {
+            document.body.classList.remove('updating-cards');
+            
+            // Check for win condition
+            checkWinCondition();
+        }, 50);
+        
         return true;
     } else {
         // If move is invalid, put cards back
